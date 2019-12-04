@@ -1,4 +1,4 @@
-package inventory;
+package inventory.api.rest;
 
 import java.util.Random;
 
