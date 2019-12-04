@@ -1,0 +1,21 @@
+#
+# These are overrides for local dev/test.
+#
+# This file contains service integration passwords.
+#
+spring:
+  devtools:
+    restart:
+      additional-paths: ./target
+      trigger-file: .appsody-spring-trigger      
+  datasource:
+    url: ${INVENTORY_URL}
+    username: ${INVENTORY_USER}
+    password: ${INVENTORY_PWD}
+  kafka:
+    bootstrap-servers: ${TOPIC_SERVERS}  
+ibm:
+  spring:
+    event-streams:
+      password: ${TOPIC_PWD}
+      

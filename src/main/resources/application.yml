@@ -1,0 +1,69 @@
+#
+# YAML documents are merged in the order in which they are encountered. Later values override earlier values.
+# This first YAML doc defines defaults that may be overridden by values in the subsequent doc if
+# the active Spring profile is 'dev'.
+#
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+
+# Server configuration
+server:
+  servlet:
+    context-path: /demo
+  port: ${SERVICE_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,liveness
+
+# The Kafka topic to listen on
+events:
+  api:
+    orders:
+      topic: orders
+
+#
+# Spring properties
+#
+spring:
+
+  application:
+    name: inventory-svc
+
+  datasource:
+    url: ${inventorydb.url:NONE}
+    username: ${inventorydb.username:NONE}
+    password: ${inventorydb.password:NONE}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      
+#
+# The 'trusted.packages' declaration here is a list of Java packages containing Java classes 
+# which model Kafka notifications of interest. This enables automatic unmarshaling of such 
+# notifications into Java objects.
+#
+  kafka:
+    bootstrap-servers: ${messagebroker.servers:NONE}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: inventory.api.events.messages
+
+ibm:
+  spring:
+    event-streams:
+      password: ${messagebroker.password:NONE}

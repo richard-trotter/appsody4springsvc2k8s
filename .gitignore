@@ -1,0 +1,15 @@
+/target/*
+.appsody-spring-trigger
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### app specific
+/src/main/resources/application-dev.yml
+
