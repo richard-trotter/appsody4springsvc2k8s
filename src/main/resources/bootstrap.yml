@@ -1,0 +1,19 @@
+
+spring:
+  application:
+    name: inventory-svc
+  cloud:
+    kubernetes:
+      secrets:
+        enabled: true
+        paths: /etc/secrets/messagebroker,/etc/secrets/inventorydb
+
+---
+
+spring:
+  profiles: dev,unittest
+  cloud:
+    kubernetes:
+      secrets:
+        enabled: false  
+        

@@ -1,0 +1,23 @@
+# This file would be used independently of (and prior to) app deployment, to 
+# establish properties for the app to read from the app runtime env (k8s cluster)
+# - via a K8s Secret - for datasource access.  
+#
+# From the directory containing this file, run:
+#
+#     kubectl apply -k .
+#
+# Copy this file to 'kustomization.yml' and fill in the missing password values. The file named
+# 'kustomization.yml' will be ignored by git.
+#
+secretGenerator:
+- name: inventory-db-access
+  literals:
+  - inventorydb.url=
+  - inventorydb.username=
+  - inventorydb.password=
+- name: inventory-broker-access
+  literals:
+  - messagebroker.servers=
+  - messagebroker.user=token
+  - messagebroker.password=
+  

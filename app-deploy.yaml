@@ -1,0 +1,92 @@
+apiVersion: appsody.dev/v1beta1
+kind: AppsodyApplication
+metadata:
+  annotations:
+    architecture: x86_64
+    authoritative-source-url: registry.access.redhat.com
+    build-date: 2019-10-29T16:44:53.794580
+    commit.image.appsody.dev/author: Rick Trotter <rtrotter@us.ibm.com>
+    commit.image.appsody.dev/committer: Rick Trotter <rtrotter@us.ibm.com>
+    commit.image.appsody.dev/contextDir: /rht.samples.spring.micro-appsody
+    commit.image.appsody.dev/date: Mon Dec 2 11:17:24 2019 -0500
+    commit.image.appsody.dev/message: README updates
+    description: This image contains the Kabanero development stack for the java-spring-boot2
+      collection
+    distribution-scope: public
+    image.opencontainers.org/created: "2019-12-04T17:56:03-05:00"
+    image.opencontainers.org/documentation: https://github.ibm.com/rtrotter/spring-samples
+    image.opencontainers.org/revision: 75c5e705aa55800cba870f7e45cd587c020f57a5-modified
+    image.opencontainers.org/source: https://github.ibm.com/rtrotter/spring-samples/tree/master
+    image.opencontainers.org/url: https://github.ibm.com/rtrotter/spring-samples
+    k8s.io/description: The Universal Base Image is designed and engineered to be
+      the base layer for all of your containerized applications, middleware and utilities.
+      This base image is freely redistributable, but Red Hat only supports Red Hat
+      technologies through subscriptions for Red Hat products. This image is maintained
+      by Red Hat and updated regularly.
+    k8s.io/display-name: Red Hat Universal Base Image 8
+    maintainer: Red Hat, Inc.
+    name: kabanero/java-spring-boot2
+    openshift.io/expose-services: ""
+    openshift.io/tags: base rhel8
+    redhat.com/build-host: cpt-1002.osbs.prod.upshift.rdu2.redhat.com
+    redhat.com/component: ubi8-container
+    redhat.com/license_terms: https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI
+    release: "277"
+    stack.appsody.dev/configured: index.docker.io/kabanero/java-spring-boot2:0.3
+    stack.appsody.dev/created: 2019-12-04T17:23:02+0000
+    stack.appsody.dev/revision: 7ad65bd9ec95dc9a39fb430a4f56ef63e9026d7f
+    stack.appsody.dev/tag: kabanero/java-spring-boot2:0.3.18
+    summary: Image for Kabanero java-spring-boot2 development
+    url: https://access.redhat.com/containers/#/registry.access.redhat.com/ubi8/images/8.1-277
+    vcs-ref: c42933bcdbf9f1c232e981a5e40de257c3534c8e
+    vcs-type: git
+    vendor: Kabanero
+    version: 0.2.10
+  creationTimestamp: null
+  labels:
+    image.opencontainers.org/title: appsody4springsvc2k8s
+    stack.appsody.dev/version: 0.3.18
+  name: inventory-svc
+spec:
+  applicationImage: inventory-svc:latest
+  createKnativeService: false
+  expose: true
+  livenessProbe:
+    failureThreshold: 12
+    httpGet:
+      path: /demo/actuator/liveness
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  pullPolicy: IfNotPresent
+  readinessProbe:
+    failureThreshold: 12
+    httpGet:
+      path: /demo/actuator/health
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  service:
+    annotations:
+      prometheus.io/path: /demo/actuator/prometheus
+      prometheus.io/scrape: "true"
+    port: 8080
+    type: NodePort
+  serviceAccountName: default
+  stack: java-spring-boot2
+  version: 1.0.0
+  volumeMounts:
+  - mountPath: /etc/secrets/inventorydb
+    name: db-secrets
+    readOnly: true
+  - mountPath: /etc/secrets/messagebroker
+    name: broker-secrets
+    readOnly: true
+  volumes:
+  - name: db-secrets
+    secret:
+      secretName: inventory-db-access-9b2fk8th2d
+  - name: broker-secrets
+    secret:
+      secretName: inventory-broker-access-9b8c5h764c
+status: {}

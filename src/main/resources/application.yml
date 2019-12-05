@@ -16,6 +16,10 @@ server:
   port: ${SERVICE_PORT:8080}
 
 management:
+#  port: ${MANAGEMENT_PORT:8090} Note that 8090 came from the garage impl and may be best practice
+  health:
+    kubernetes:
+      enabled: false  # this requires authorization that is not in place
   endpoints:
     web:
       exposure:
@@ -30,10 +34,10 @@ events:
 #
 # Spring properties
 #
+# DataSource and Kafka config are expected to be acquired from an external source, such 
+# as K8s Secrets.
+#
 spring:
-
-  application:
-    name: inventory-svc
 
   datasource:
     url: ${inventorydb.url:NONE}

@@ -14,6 +14,8 @@ spring:
     password: ${INVENTORY_PWD}
   kafka:
     bootstrap-servers: ${TOPIC_SERVERS}  
+  autoconfigure:
+    exclude: org.spring.cloud.kubernetes.KubernetesAutoConfiguration
 ibm:
   spring:
     event-streams:
