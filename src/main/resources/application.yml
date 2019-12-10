@@ -38,7 +38,6 @@ events:
 # as K8s Secrets.
 #
 spring:
-
   datasource:
     url: ${inventorydb.url:NONE}
     username: ${inventorydb.username:NONE}

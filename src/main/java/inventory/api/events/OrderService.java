@@ -7,13 +7,12 @@ import inventory.models.InventoryItem;
 import inventory.models.InventoryRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 /**
@@ -25,23 +24,20 @@ import java.util.Optional;
  */
 @Service
 @KafkaListener(topics = {"${events.api.orders.topic}"}, id = "inventory-service")
-@Profile("!unittest")
 public class OrderService {
     private Logger logger = LoggerFactory.getLogger(OrderService.class);
 
-    private final String topicName;
     private final InventoryRepo inventoryRepo;
 
-    public OrderService(@Value("${events.api.orders.topic}") String topicName, InventoryRepo inventoryRepo) {
-        this.topicName = topicName;
+    public OrderService(InventoryRepo inventoryRepo) {
         this.inventoryRepo = inventoryRepo;
     }
 
     @KafkaHandler
+    @SendTo("${events.api.orders.topic}")
     public Object orderRequestedEvent(InventoryOrderRequest orderRequest) {
         logger.info("order requested: " + orderRequest);
 
-        Object response;
         long itemId = orderRequest.getItemId();
         Optional<InventoryItem> optional = inventoryRepo.findById(itemId);
         if (optional.isPresent()) {
@@ -49,22 +45,25 @@ public class OrderService {
             inventoryItem.setStock(inventoryItem.getStock() - orderRequest.getCount());
             inventoryRepo.save(inventoryItem);
             logger.info("Updated inventory: " + itemId + " new stock: " + inventoryItem.getStock());
-            response = new InventoryUpdated(itemId, orderRequest.getCount());
-        } else {
-            logger.warn("Received message for item that does not exist!" + itemId);
-            response = new InvalidOrder(itemId);
+            return new InventoryUpdated(itemId, orderRequest.getCount());
         }
-        return response;
+
+        logger.warn("Received message for item that does not exist!" + itemId);
+        return new InvalidOrder(itemId);
+    }
+
+    @KafkaHandler
+    public void handleInventoryUpdated(InventoryUpdated inventoryUpdated) {
+        logger.info("Invalid order received item id = [{}]" + inventoryUpdated.getId());
+    }
+
+    @KafkaHandler
+    public void handleInvalidOrder(InvalidOrder invalidOrder) {
+        logger.info("Invalid order received item id = [{}]" + invalidOrder.getItemId());
     }
 
     @KafkaHandler(isDefault = true)
     public void unknown(Object object) {
         logger.info("Received unknown: " + object);
     }
-
-    @PostConstruct
-    public void logInit() {
-        logger.info("Created KafkaListener for topic: \"" + topicName + "\"");
-    }
-
 }
