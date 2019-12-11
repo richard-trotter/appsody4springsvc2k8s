@@ -1,8 +1,8 @@
 package inventory.api;
 
 import inventory.kafka.messages.InventoryOrderRequest;
-import inventory.models.InventoryItem;
-import inventory.models.InventoryRepo;
+import inventory.jpa.InventoryItem;
+import inventory.jpa.InventoryRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
