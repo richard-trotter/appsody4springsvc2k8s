@@ -70,4 +70,4 @@ ibm:
     event-streams:
       password: ${messagebroker.password:NONE}
     kafka:
-      subpackages: inventory.api.events.messages
+      subpackages: inventory.kafka.messages
