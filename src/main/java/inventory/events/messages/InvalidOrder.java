@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package inventory.api.events.messages;
+package inventory.events.messages;
 
 public class InvalidOrder {
     long itemId;

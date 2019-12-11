@@ -1,4 +1,4 @@
-package inventory.api.events.messages;
+package inventory.events.messages;
 
 /**
  * This class models a request to order a specified quantity of a specified
