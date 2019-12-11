@@ -19,8 +19,8 @@ import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.stereotype.Component;
 
-@Endpoint(id = "liveness")
 @Component
+@Endpoint(id = "liveness")
 public class SimpleCustomLivenessEndpoint {
 
     @Value("${spring.application.name}")

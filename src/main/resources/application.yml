@@ -16,7 +16,6 @@ server:
   port: ${SERVICE_PORT:8080}
 
 management:
-#  port: ${MANAGEMENT_PORT:8090} Note that 8090 came from the garage impl and may be best practice
   health:
     kubernetes:
       enabled: false  # this requires authorization that is not in place
@@ -48,25 +47,27 @@ spring:
     hibernate:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-      
-#
-# The 'trusted.packages' declaration here is a list of Java packages containing Java classes 
-# which model Kafka notifications of interest. This enables automatic unmarshaling of such 
-# notifications into Java objects.
-#
-  kafka:
-    bootstrap-servers: ${messagebroker.servers:NONE}
-    producer:
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: inventory.api.events.messages
+
+  #
+  # The 'trusted.packages' declaration here is a list of Java packages containing Java classes
+  # which model Kafka notifications of interest. This enables automatic unmarshaling of such
+  # notifications into Java objects.
+  #
+#  kafka:
+#    bootstrap-servers: ${messagebroker.servers:NONE}
+#    producer:
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring:
+#          json:
+#            trusted:
+#              packages: inventory.api.events.messages
 
 ibm:
   spring:
     event-streams:
       password: ${messagebroker.password:NONE}
+    kafka:
+      subpackages: inventory.api.events.messages
