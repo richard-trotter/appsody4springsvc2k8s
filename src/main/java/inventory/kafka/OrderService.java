@@ -1,8 +1,8 @@
-package inventory.events;
+package inventory.kafka;
 
-import inventory.events.messages.InvalidOrder;
-import inventory.events.messages.InventoryOrderRequest;
-import inventory.events.messages.InventoryUpdated;
+import inventory.kafka.messages.InvalidOrder;
+import inventory.kafka.messages.InventoryOrderRequest;
+import inventory.kafka.messages.InventoryUpdated;
 import inventory.models.InventoryItem;
 import inventory.models.InventoryRepo;
 import org.slf4j.Logger;

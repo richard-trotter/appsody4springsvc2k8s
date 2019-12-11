@@ -1,4 +1,4 @@
-package inventory.events.messages;
+package inventory.kafka.messages;
 
 /**
  * This class models a request to order a specified quantity of a specified

@@ -1,6 +1,6 @@
 package inventory;
 
-import inventory.events.OrderService;
+import inventory.kafka.OrderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

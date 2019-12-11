@@ -1,6 +1,6 @@
 package inventory.api;
 
-import inventory.events.messages.InventoryOrderRequest;
+import inventory.kafka.messages.InventoryOrderRequest;
 import inventory.models.InventoryItem;
 import inventory.models.InventoryRepo;
 import org.slf4j.Logger;
