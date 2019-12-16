@@ -13,3 +13,6 @@
 ### app specific
 /src/main/resources/application-dev.yml
 kustomization.yml
+
+### Intellij ###
+.idea

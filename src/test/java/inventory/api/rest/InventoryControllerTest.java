@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import inventory.models.InventoryItem;
+import inventory.jpa.InventoryItem;
 
 public class InventoryControllerTest {
 
