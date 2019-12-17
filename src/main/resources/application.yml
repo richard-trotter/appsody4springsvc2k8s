@@ -37,6 +37,7 @@ events:
 # as K8s Secrets.
 #
 spring:
+
   datasource:
     url: ${inventorydb.url:NONE}
     username: ${inventorydb.username:NONE}
@@ -48,23 +49,16 @@ spring:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
 
-  #
-  # The 'trusted.packages' declaration here is a list of Java packages containing Java classes
-  # which model Kafka notifications of interest. This enables automatic unmarshaling of such
-  # notifications into Java objects.
-  #
-#  kafka:
-#    bootstrap-servers: ${messagebroker.servers:NONE}
-#    producer:
-#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#    consumer:
-#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-#      properties:
-#        spring:
-#          json:
-#            trusted:
-#              packages: inventory.api.events.messages
+  kafka:
+    bootstrap-servers: ${messagebroker.servers:NONE}
 
+#
+# Properties used only by the event-streams starter. 
+#
+# The 'subpackages' declaration here is a list of Java packages containing Java 
+# classes which model Kafka notifications of interest. This enables automatic 
+# unmarshaling of such notifications into Java objects.
+#
 ibm:
   spring:
     event-streams:

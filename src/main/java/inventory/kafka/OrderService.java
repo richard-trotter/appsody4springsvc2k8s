@@ -53,12 +53,12 @@ public class OrderService {
 
     @KafkaHandler
     public void handleInventoryUpdated(InventoryUpdated inventoryUpdated) {
-        logger.info("Invalid order received item id = [{}]" + inventoryUpdated.getId());
+        // no action required by this OrderService
     }
 
     @KafkaHandler
     public void handleInvalidOrder(InvalidOrder invalidOrder) {
-        logger.info("Invalid order received item id = [{}]" + invalidOrder.getItemId());
+      // no action required by this OrderService
     }
 
     @KafkaHandler(isDefault = true)
