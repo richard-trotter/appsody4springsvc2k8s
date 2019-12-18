@@ -1,19 +1,19 @@
-package inventory.kafka.messages;
+package inventory.api.kafka.messages;
 
 /**
  * This class models a request to order a specified quantity of a specified
  * item from inventory.
  */
-public class InventoryOrderRequest {
+public class OrderCompleted {
 
     long itemId;
 
     int count;
 
-    public InventoryOrderRequest() {
+    public OrderCompleted() {
     }
 
-    public InventoryOrderRequest(long itemId, int count) {
+    public OrderCompleted(long itemId, int count) {
         this.itemId = itemId;
         this.count = count;
     }

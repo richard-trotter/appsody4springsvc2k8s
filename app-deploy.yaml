@@ -8,16 +8,16 @@ metadata:
     commit.image.appsody.dev/author: Rick Trotter <rtrotter@us.ibm.com>
     commit.image.appsody.dev/committer: Rick Trotter <rtrotter@us.ibm.com>
     commit.image.appsody.dev/contextDir: /rht.samples.spring.micro-appsody
-    commit.image.appsody.dev/date: Mon Dec 2 11:17:24 2019 -0500
-    commit.image.appsody.dev/message: README updates
+    commit.image.appsody.dev/date: Tue Dec 17 17:30:47 2019 -0500
+    commit.image.appsody.dev/message: fix for kafka config with k8s deploy
     description: This image contains the Kabanero development stack for the java-spring-boot2
       collection
     distribution-scope: public
-    image.opencontainers.org/created: "2019-12-04T17:56:03-05:00"
-    image.opencontainers.org/documentation: https://github.ibm.com/rtrotter/spring-samples
-    image.opencontainers.org/revision: 75c5e705aa55800cba870f7e45cd587c020f57a5-modified
-    image.opencontainers.org/source: https://github.ibm.com/rtrotter/spring-samples/tree/master
-    image.opencontainers.org/url: https://github.ibm.com/rtrotter/spring-samples
+    image.opencontainers.org/created: "2019-12-18T08:21:39-05:00"
+    image.opencontainers.org/documentation: https://github.com/richard-trotter/appsody4springsvc2k8s
+    image.opencontainers.org/revision: a8158040ccee65e21f7576c6d7377d67274db6ce-modified
+    image.opencontainers.org/source: https://github.com/richard-trotter/appsody4springsvc2k8s/tree/master
+    image.opencontainers.org/url: https://github.com/richard-trotter/appsody4springsvc2k8s
     k8s.io/description: The Universal Base Image is designed and engineered to be
       the base layer for all of your containerized applications, middleware and utilities.
       This base image is freely redistributable, but Red Hat only supports Red Hat
@@ -32,8 +32,8 @@ metadata:
     redhat.com/component: ubi8-container
     redhat.com/license_terms: https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI
     release: "277"
-    stack.appsody.dev/configured: index.docker.io/kabanero/java-spring-boot2:0.3
-    stack.appsody.dev/created: 2019-12-04T17:23:02+0000
+    stack.appsody.dev/configured: docker.io/kabanero/java-spring-boot2:0.3
+    stack.appsody.dev/created: 2019-12-13T14:51:11+0000
     stack.appsody.dev/revision: 7ad65bd9ec95dc9a39fb430a4f56ef63e9026d7f
     stack.appsody.dev/tag: kabanero/java-spring-boot2:0.3.18
     summary: Image for Kabanero java-spring-boot2 development

@@ -12,7 +12,7 @@
  * and limitations under the License.
  */
 
-package inventory.api;
+package inventory.api.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;

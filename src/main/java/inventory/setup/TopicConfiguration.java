@@ -1,4 +1,4 @@
-package inventory.kafka;
+package inventory.setup;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;

@@ -89,6 +89,7 @@
 			<scope>compile</scope>
 			<version>0.0.2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.ibm.cloud</groupId>
 			<artifactId>kafka-json-eventing-spring-boot-starter</artifactId>

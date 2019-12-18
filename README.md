@@ -48,7 +48,7 @@ A script is provided to automate this request sequence, given a `hostport` param
 
 ## Messaging API
 
-Step (b) above, where we simulate order fulfillment, actually involves the posting of a `order request` message to a `orders` Kafka topic. As a Kafka listener, then, our sample here receives an `order request` message. The change in current stock level is performed by the `order request` notification handler. 
+Step (b) above, where we simulate order fulfillment, actually involves the posting of a `order completed` message to a `orders` Kafka topic. As a Kafka listener, then, our sample here receives an `order completed` message. The change in current stock level is performed by the `order completed` notification handler. 
 
 ## Running the sample
 
@@ -62,7 +62,7 @@ The sample requires a single 'items' table for the persisted inventory model. A 
 
 ## Unit Test
 
-The Appsody starter application includes implementations for a K8s `livenessProbe` and a K8s `readinessProbe`. These probes are implemented using the Spring Boot `actuator` framework. The starter application also includes a set of unit tests for the actuator endpoints, in: `MainTests.java`. For unit test, we don't want to include any external service integration dependencies. A `unittest` Spring profile is used to enable configuration for unit test. When unit test is run, the external Event Streams and DB2 dependencies are disabled by configuration.
+The Appsody starter application includes implementations for a K8s `livenessProbe` and a K8s `readinessProbe`. These probes are implemented using the Spring Boot `actuator` framework. The starter application also includes a set of unit tests for the actuator endpoints, in: `MainTests.java`. 
 
 ## Running the sample in a Kubernetes cluster
 

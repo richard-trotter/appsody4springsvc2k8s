@@ -13,33 +13,23 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package inventory.kafka.messages;
+package inventory.api.kafka.messages;
 
-public class InventoryUpdated {
-    private long id;
-    private long decrementAmount;
+public class InvalidOrder {
+    long itemId;
 
-    public InventoryUpdated() {
+    public InvalidOrder() {
     }
 
-    public InventoryUpdated(long id, long decrementAmount) {
-        this.id = id;
-        this.decrementAmount = decrementAmount;
+    public InvalidOrder(long itemId) {
+        this.itemId = itemId;
     }
 
-    public long getId() {
-        return id;
+    public long getItemId() {
+        return itemId;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getDecrementAmount() {
-        return decrementAmount;
-    }
-
-    public void setDecrementAmount(long decrementAmount) {
-        this.decrementAmount = decrementAmount;
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
     }
 }

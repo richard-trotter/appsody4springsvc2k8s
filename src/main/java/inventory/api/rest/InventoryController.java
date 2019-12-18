@@ -1,6 +1,6 @@
-package inventory.api;
+package inventory.api.rest;
 
-import inventory.kafka.messages.InventoryOrderRequest;
+import inventory.api.kafka.messages.OrderCompleted;
 import inventory.jpa.InventoryItem;
 import inventory.jpa.InventoryRepo;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class InventoryController {
 
     // May be disabled for unit test
     @Autowired(required = false)
-    private KafkaOperations<String, InventoryOrderRequest> kafkaOperations;
+    private KafkaOperations<String, OrderCompleted> kafkaOperations;
 
     @Value(value = "${events.api.orders.topic}")
     String topicName;
@@ -74,7 +74,7 @@ public class InventoryController {
 
         logger.info("Posting an order notification");
 
-        final InventoryOrderRequest message = new InventoryOrderRequest(itemId, count);
+        final OrderCompleted message = new OrderCompleted(itemId, count);
         kafkaOperations.send(topicName, message).addCallback(
                 (SuccessCallback) result -> logger.info("Delivered InventoryOrderRequest [" + message + "]"),
                 ex -> logger.error("Unable to send InventoryOrderRequest [" + message + "] due to : " + ex.getMessage()));

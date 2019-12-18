@@ -1,8 +1,8 @@
-package inventory.kafka;
+package inventory.api.kafka;
 
-import inventory.kafka.messages.InvalidOrder;
-import inventory.kafka.messages.InventoryOrderRequest;
-import inventory.kafka.messages.InventoryUpdated;
+import inventory.api.kafka.messages.InvalidOrder;
+import inventory.api.kafka.messages.InventoryUpdated;
+import inventory.api.kafka.messages.OrderCompleted;
 import inventory.jpa.InventoryItem;
 import inventory.jpa.InventoryRepo;
 import org.slf4j.Logger;
@@ -23,18 +23,18 @@ import java.util.Optional;
  */
 @Service
 @KafkaListener(topics = {"${events.api.orders.topic}"}, id = "inventory-service")
-public class OrderService {
-    private Logger logger = LoggerFactory.getLogger(OrderService.class);
+public class OrderCompletionListener {
+    private Logger logger = LoggerFactory.getLogger(OrderCompletionListener.class);
 
     private final InventoryRepo inventoryRepo;
 
-    public OrderService(InventoryRepo inventoryRepo) {
+    public OrderCompletionListener(InventoryRepo inventoryRepo) {
         this.inventoryRepo = inventoryRepo;
     }
 
     @KafkaHandler
     @SendTo("${events.api.orders.topic}")
-    public Object orderRequestedEvent(InventoryOrderRequest orderRequest) {
+    public Object orderRequestedEvent(OrderCompleted orderRequest) {
         logger.info("order requested: " + orderRequest);
 
         long itemId = orderRequest.getItemId();
