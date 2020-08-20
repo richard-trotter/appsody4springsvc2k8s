@@ -1,18 +1,25 @@
+#
+# CONFIGURATION FOR TEST
+#
+# spring.embedded.kafka.brokers system property is set by Embedded Kafka server to 
+# the addresses of the bootstrap servers
+#
 spring:
+  jpa:
+    generate-ddl: true
   datasource:
     url: jdbc:h2:mem:testdb
     username: sa
     password: sa
     driver-class-name: org.h2.Driver
+#   kafka:
+#  ${kafka.bootstrap-servers}
+#     bootstrap-servers: ${spring.embedded.kafka.brokers}
 events:
   api:
     orders:
       topic: test
 management:
-  #  port: ${MANAGEMENT_PORT:8090} Note that 8090 came from the garage impl and may be best practice
-  health:
-    kubernetes:
-      enabled: false  # this requires authorization that is not in place
   endpoints:
     web:
       exposure:

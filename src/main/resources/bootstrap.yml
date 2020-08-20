@@ -11,9 +11,8 @@ spring:
 ---
 
 spring:
-  profiles: dev,unittest
+  profiles: dev,test
   cloud:
     kubernetes:
       secrets:
-        enabled: false  
-        
+        enabled: false          

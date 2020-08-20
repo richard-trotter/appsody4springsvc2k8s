@@ -3,6 +3,8 @@ package inventory.api.rest;
 import inventory.api.kafka.messages.OrderCompleted;
 import inventory.jpa.InventoryItem;
 import inventory.jpa.InventoryRepo;
+import inventory.setup.ItemsBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -35,6 +38,11 @@ public class InventoryController {
     @Autowired
     private InventoryRepo itemsRepo;
 
+    @Autowired
+    private ItemsBuilder itemsBuilder;
+    
+    private boolean isDatasetReady = false;
+    
     // May be disabled for unit test
     @Autowired(required = false)
     private KafkaOperations<String, OrderCompleted> kafkaOperations;
@@ -48,7 +56,7 @@ public class InventoryController {
     @GetMapping("/item")
     @ResponseBody
     Iterable<InventoryItem> getInventory() {
-        return itemsRepo.findAll();
+        return getItemsRepo().findAll();
     }
 
     /**
@@ -57,7 +65,7 @@ public class InventoryController {
     @GetMapping("/item/{itemId}")
     @ResponseBody
     Optional<InventoryItem> getInventoryItem(@PathVariable(value = "itemId") long itemId) {
-        return itemsRepo.findById(itemId);
+        return getItemsRepo().findById(itemId);
     }
 
     /**
@@ -80,6 +88,20 @@ public class InventoryController {
                 ex -> logger.error("Unable to send InventoryOrderRequest [" + message + "] due to : " + ex.getMessage()));
 
         return;
+    }
+
+    private synchronized InventoryRepo getItemsRepo() {
+      
+      if( ! isDatasetReady ) {
+        try {
+          itemsBuilder.createItems();
+          isDatasetReady = true;
+        }
+        catch (IOException ex) {
+          logger.error("Items data load error: "+ex.toString());
+        }        
+      }
+      return itemsRepo;
     }
 
 }

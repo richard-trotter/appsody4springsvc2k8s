@@ -1,5 +1,6 @@
 package inventory.jpa;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class InventoryItem {
 
     // Item description
     @NotNull
+    @Column(length = 3072)
     private String description;
 
     // Item price

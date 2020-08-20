@@ -1,18 +1,62 @@
 package inventory.api.rest;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Random;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import inventory.jpa.InventoryItem;
 
+@SpringBootTest
+@WebAppConfiguration
+@AutoConfigureMockMvc
+@ActiveProfiles(profiles = "test")
 public class InventoryControllerTest {
 
+  @Autowired
+  MockMvc mockMvc;
+  
+  @Autowired
+  InventoryController controller;
+  
+  @Test
+  public final void whenContextIsBootstrapped_thenOkReady() {
+    assertTrue(mockMvc != null, "Missing MockMvc bean");  
+    assertTrue(controller != null, "Missing InventoryController bean");
+  }
 
-	@Test
+  // TODO: improve response validation using mapped json objects
+  // TODO: add test coverage for error cases
+  
+  @Test
+  public void whenGetItems_thenOkNotEmpty() throws Exception {
+  
+      MockHttpServletResponse response = mockMvc
+          .perform(
+              get("/inventory/item")
+              .contentType("application/json"))
+          .andExpect(status().isOk())
+          .andReturn()
+          .getResponse();
+      
+      String body = response.getContentAsString();
+      assertTrue(body.contains("Punched-card tabulating machines"), "Missing expected items"); 
+  }
+
+  @Test
 	public void testMarshalToJson() throws Exception {
 		final InventoryItem inv = new InventoryItem();
 		final Random rnd = new Random();
@@ -103,4 +147,5 @@ public class InventoryControllerTest {
 
 
 	}
+
 }

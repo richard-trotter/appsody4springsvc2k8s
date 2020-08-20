@@ -58,7 +58,7 @@ The sample is built for execution within a local development scenario, component
 
 With the `dev` configuration profile active, a TopicConfiguration bean will create the required `orders` topic as needed. 
 
-The sample requires a single 'items' table for the persisted inventory model. A `db2_ddl.sql` script is provided for creation of this table. A `db2_data.sql` script is also provided for seeding this `items` table with sample data. With the `dev` configuration profile active, however, an ItemsBuilder bean will create the `items` table data on startup if needed - and recreate that data if it already exists. 
+The sample requires a single 'items' table for the persisted inventory model. A `db2_ddl.sql` script is provided for creation of this table. A `insert_sample_data.sql` script is also provided for seeding this `items` table with sample data. With the `dev` configuration profile active, however, an ItemsBuilder bean will create the `items` table data on startup if needed - and recreate that data if it already exists. 
 
 ## Unit Test
 
