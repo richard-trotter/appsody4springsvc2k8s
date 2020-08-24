@@ -4,16 +4,16 @@ package inventory.api.kafka.messages;
  * This class models a request to order a specified quantity of a specified
  * item from inventory.
  */
-public class OrderCompleted {
+public class OrderCompletedNotice {
 
     long itemId;
 
     int count;
 
-    public OrderCompleted() {
+    public OrderCompletedNotice() {
     }
 
-    public OrderCompleted(long itemId, int count) {
+    public OrderCompletedNotice(long itemId, int count) {
         this.itemId = itemId;
         this.count = count;
     }
@@ -34,12 +34,9 @@ public class OrderCompleted {
         this.count = count;
     }
 
+    @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("InventoryOrderRequest {")
-                .append(" itemId=").append(Long.toString(itemId))
-                .append(", count=").append(Integer.toString(count)).append(" }");
-        return buf.toString();
+      return "OrderCompletedNotice [itemId=" + itemId + ", count=" + count + "]";
     }
 
 }

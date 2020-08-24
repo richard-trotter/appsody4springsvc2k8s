@@ -6,13 +6,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -72,6 +74,18 @@ public class ItemsBuilder {
     
     Long itemsCount = jdbcTemplate.queryForObject("select count(*) from ITEMS", Long.class);
     logger.info("After data load, Found "+itemsCount+" 'items'");
+  }
+
+  @EventListener
+  public void handleApplicationEvent(ApplicationStartedEvent evt) {
+
+     try {
+      this.createItems();
+    }
+    catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
 }

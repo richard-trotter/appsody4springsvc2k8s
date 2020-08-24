@@ -36,7 +36,7 @@ public class Main {
     };
 
     for( String pname : plist ) 
-      logger.info(pfx+pname+": "+env.getProperty(pname));
+      logger.info("[CONFIG] "+pfx+pname+": "+env.getProperty(pname));
 
     logger.info("Inventory microservice is ready for business!");
   }

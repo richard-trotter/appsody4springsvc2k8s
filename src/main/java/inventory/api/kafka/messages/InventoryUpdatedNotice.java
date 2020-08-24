@@ -15,14 +15,16 @@
  */
 package inventory.api.kafka.messages;
 
-public class InvalidOrder {
-    long itemId;
+public class InventoryUpdatedNotice {
+    private long itemId;
+    private long currentStockUnits;
 
-    public InvalidOrder() {
+    public InventoryUpdatedNotice() {
     }
 
-    public InvalidOrder(long itemId) {
+    public InventoryUpdatedNotice(long itemId, long currentStockUnits) {
         this.itemId = itemId;
+        this.currentStockUnits = currentStockUnits;
     }
 
     public long getItemId() {
@@ -31,5 +33,18 @@ public class InvalidOrder {
 
     public void setItemId(long itemId) {
         this.itemId = itemId;
+    }
+
+    public long getCurrentStockUnits() {
+        return currentStockUnits;
+    }
+
+    public void setCurrentStockUnits(long currentStockUnits) {
+        this.currentStockUnits = currentStockUnits;
+    }
+
+    @Override
+    public String toString() {
+      return "InventoryUpdatedNotice [itemId=" + itemId + ", currentStockUnits=" + currentStockUnits + "]";
     }
 }

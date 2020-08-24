@@ -15,31 +15,26 @@
  */
 package inventory.api.kafka.messages;
 
-public class InventoryUpdated {
-    private long id;
-    private long decrementAmount;
+public class InvalidOrderNotice {
+    long itemId;
 
-    public InventoryUpdated() {
+    public InvalidOrderNotice() {
     }
 
-    public InventoryUpdated(long id, long decrementAmount) {
-        this.id = id;
-        this.decrementAmount = decrementAmount;
+    public InvalidOrderNotice(long itemId) {
+        this.itemId = itemId;
     }
 
-    public long getId() {
-        return id;
+    public long getItemId() {
+        return itemId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
     }
 
-    public long getDecrementAmount() {
-        return decrementAmount;
-    }
-
-    public void setDecrementAmount(long decrementAmount) {
-        this.decrementAmount = decrementAmount;
+    @Override
+    public String toString() {
+      return "InvalidOrderNotice [itemId=" + itemId + "]";
     }
 }

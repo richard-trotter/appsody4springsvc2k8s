@@ -1,9 +1,6 @@
 package inventory.api.rest;
 
-import inventory.api.kafka.messages.OrderCompleted;
-import inventory.jpa.InventoryItem;
-import inventory.jpa.InventoryRepo;
-import inventory.setup.ItemsBuilder;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 
-import java.io.IOException;
-import java.util.Optional;
+import inventory.api.kafka.messages.OrderCompletedNotice;
+import inventory.jpa.InventoryItem;
+import inventory.jpa.InventoryRepo;
 
 /**
  * REST Controller providing endpoints for access to the Inventory of items.
@@ -35,17 +33,13 @@ public class InventoryController {
 
     private final static Logger logger = LoggerFactory.getLogger(InventoryController.class);
 
+    // TODO: refactor to add a service layer
     @Autowired
     private InventoryRepo itemsRepo;
 
-    @Autowired
-    private ItemsBuilder itemsBuilder;
-    
-    private boolean isDatasetReady = false;
-    
     // May be disabled for unit test
     @Autowired(required = false)
-    private KafkaOperations<String, OrderCompleted> kafkaOperations;
+    private KafkaOperations<String, OrderCompletedNotice> kafkaOperations;
 
     @Value(value = "${events.api.orders.topic}")
     String topicName;
@@ -82,25 +76,15 @@ public class InventoryController {
 
         logger.info("Posting an order notification");
 
-        final OrderCompleted message = new OrderCompleted(itemId, count);
+        final OrderCompletedNotice message = new OrderCompletedNotice(itemId, count);
         kafkaOperations.send(topicName, message).addCallback(
-                (SuccessCallback) result -> logger.info("Delivered InventoryOrderRequest [" + message + "]"),
-                ex -> logger.error("Unable to send InventoryOrderRequest [" + message + "] due to : " + ex.getMessage()));
+                (SuccessCallback) result -> logger.info("Delivered : " + message),
+                ex -> logger.error("Unable to send "+message+ " due to : " + ex.getMessage()));
 
         return;
     }
 
-    private synchronized InventoryRepo getItemsRepo() {
-      
-      if( ! isDatasetReady ) {
-        try {
-          itemsBuilder.createItems();
-          isDatasetReady = true;
-        }
-        catch (IOException ex) {
-          logger.error("Items data load error: "+ex.toString());
-        }        
-      }
+    private InventoryRepo getItemsRepo() {      
       return itemsRepo;
     }
 
