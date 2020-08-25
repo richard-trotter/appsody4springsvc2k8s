@@ -35,6 +35,10 @@ management:
       exposure:
         include: health,metrics,prometheus,liveness
 
+# opentracing:
+#   jaeger:
+#     enabled: false
+
 ibm:
   spring:
     kafka:

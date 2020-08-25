@@ -7,7 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -20,11 +24,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import inventory.jpa.InventoryItem;
 
+@ActiveProfiles(profiles = "test")
 @SpringBootTest
 @WebAppConfiguration
 @AutoConfigureMockMvc
-@ActiveProfiles(profiles = "test")
+@EnableAutoConfiguration(exclude={KafkaAutoConfiguration.class})
 public class InventoryControllerTest {
+
+  private static final Logger log = LoggerFactory.getLogger(InventoryControllerTest.class);
 
   @Autowired
   MockMvc mockMvc;
@@ -58,16 +65,15 @@ public class InventoryControllerTest {
 
   @Test
 	public void testMarshalToJson() throws Exception {
-		final InventoryItem inv = new InventoryItem();
-		final Random rnd = new Random();
+
+    Random rnd = new Random();
 
 		long id = rnd.nextLong();
 		int price = rnd.nextInt();
 		int stock = rnd.nextInt();
 
-		final ObjectMapper mapper = new ObjectMapper();
-
-
+		// Build a corresponding testcase object and serialize to json 
+    InventoryItem inv = new InventoryItem();
 		inv.setId(id);
 		inv.setName("myInv");
 		inv.setDescription("Test inventory description");
@@ -76,13 +82,11 @@ public class InventoryControllerTest {
 		inv.setPrice(price);
 		inv.setStock(stock);
 
-
-		final String json = mapper.writeValueAsString(inv);
+    ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(inv);
 
 		// construct a json string with the above properties
-
-		final StringBuilder myJsonStr = new StringBuilder();
-
+		StringBuilder myJsonStr = new StringBuilder();
 		myJsonStr.append("{");
 		myJsonStr.append("\"id\":").append(id).append(",");
 		myJsonStr.append("\"name\":").append("\"myInv\"").append(",");
@@ -93,16 +97,14 @@ public class InventoryControllerTest {
 		myJsonStr.append("\"price\":").append(price);
 		myJsonStr.append("}");
 
-		final String myJson = myJsonStr.toString();
-		System.out.println("Marshalled Inventory to JSON:" + myJson);
-		System.out.println("My JSON String:" + myJson);
+		String myJson = myJsonStr.toString();
+		log.info("Marshalled Inventory to JSON:" + myJson);
+		log.info("My JSON String:" + myJson);
 
-		final JsonNode jsonObj = mapper.readTree(json);
-		final JsonNode myJsonObj = mapper.readTree(myJson);
-
+		JsonNode jsonObj = mapper.readTree(json);
+		JsonNode myJsonObj = mapper.readTree(myJson);
 
 		assert(jsonObj.equals(myJsonObj));
-
 	}
 
 	@Test

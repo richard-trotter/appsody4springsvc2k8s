@@ -22,7 +22,6 @@ public class Main {
 
   }
 
-
   @EventListener
   public void handleApplicationEvent(ApplicationReadyEvent evt) {
 
@@ -36,7 +35,12 @@ public class Main {
     };
 
     for( String pname : plist ) 
-      logger.info("[CONFIG] "+pfx+pname+": "+env.getProperty(pname));
+      try {
+        logger.info("[CONFIG] "+pfx+pname+": "+env.getProperty(pname));
+      }
+      catch( IllegalArgumentException ex ) {
+        logger.warn(ex.toString());
+      }
 
     logger.info("Inventory microservice is ready for business!");
   }

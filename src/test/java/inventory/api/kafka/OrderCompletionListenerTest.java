@@ -21,31 +21,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import inventory.api.kafka.messages.InvalidOrderNotice;
 import inventory.api.kafka.messages.InventoryUpdatedNotice;
 import inventory.api.kafka.messages.OrderCompletedNotice;
 
-//TODO: cleanup test configuration setup
-// 
-//Neither @ContextConfiguration nor @ContextHierarchy found for test class [inventory.api.kafka.OrderCompletionListenerTest], using SpringBootContextLoader
-//Could not detect default resource locations for test class [inventory.api.kafka.OrderCompletionListenerTest]: no resource found for suffixes {-context.xml, Context.groovy}.
-//Could not detect default configuration classes for test class [inventory.api.kafka.OrderCompletionListenerTest]: OrderCompletionListenerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-//Found @SpringBootConfiguration inventory.Main for test class inventory.api.kafka.OrderCompletionListenerTest2020-08-24 08:07:09.044  INFO 97663 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Neither @ContextConfiguration nor @ContextHierarchy found for test class [inventory.api.kafka.OrderCompletionListenerTest], using SpringBootContextLoader
-//Could not detect default resource locations for test class [inventory.api.kafka.OrderCompletionListenerTest]: no resource found for suffixes {-context.xml, Context.groovy}.
-//Could not detect default configuration classes for test class [inventory.api.kafka.OrderCompletionListenerTest]: OrderCompletionListenerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-//Found @SpringBootConfiguration inventory.Main for test class inventory.api.kafka.OrderCompletionListenerTest
-@SpringBootTest
 @ActiveProfiles(profiles = "test")
-@EmbeddedKafka(topics = { "${events.api.orders.topic}" })
-@DirtiesContext
+@SpringBootTest(webEnvironment = WebEnvironment.NONE, properties = "opentracing.spring.web.enabled=false")
+@EmbeddedKafka(topics={"${events.api.orders.topic}"}, partitions=1)
 @TestMethodOrder(OrderAnnotation.class)
 public class OrderCompletionListenerTest {
   private static final Logger log = LoggerFactory.getLogger(OrderCompletionListenerTest.class);
