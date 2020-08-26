@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -35,32 +36,49 @@ import inventory.api.kafka.messages.OrderCompletedNotice;
 
 @ActiveProfiles(profiles = "test")
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, properties = "opentracing.spring.web.enabled=false")
-@EmbeddedKafka(topics={"${events.api.orders.topic}"}, partitions=1)
+@EmbeddedKafka(topics={"${events.api.orders.topic}","${events.api.inventory.topic}"}, partitions=1)
 @TestMethodOrder(OrderAnnotation.class)
 public class OrderCompletionListenerTest {
   private static final Logger log = LoggerFactory.getLogger(OrderCompletionListenerTest.class);
 
+  private static final String consumerGroupID = "inventory-service-test";
+  private static final String consumerClientID = "inventory-service-test-driver";
+  
   @Autowired
   private KafkaOperations<String, OrderCompletedNotice> kafkaOperations;
 
   @Autowired
   private EmbeddedKafkaBroker kafkaBroker;
 
-  @Value("${spring.embedded.kafka.brokers}")
-  private String brokerAddresses;
+  @Value("${spring.kafka.bootstrap-servers}")
+  private String bootstrapServers;
+
+  @Value("${spring.kafka.consumer.key-deserializer}")
+  private String consumerKeyDeserializer;
+
+  @Value("${spring.kafka.consumer.value-deserializer}")
+  private String consumerValueDeserializer;
+
+  @Value("${spring.kafka.consumer.properties.spring.json.trusted.packages}")
+  private String consumerTrustedPackages;
 
   @Value(value = "${events.api.orders.topic}")
-  String topicName;
+  private String ordersTopicName;
+
+  @Value(value = "${events.api.inventory.topic}")
+  private String inventoryTopicName;
 
   private Properties consumerProperties = new Properties();
 
+  // When polling for the status message posted by the OrderCompletionListener, use the Apache Kafka Client api directly.
   private Properties getKafkaConsumerConfig() {
     if( consumerProperties.isEmpty() ) {
-      consumerProperties.put("bootstrap.servers", brokerAddresses);
-      consumerProperties.put("group.id", "inventory-service-test");
-      consumerProperties.put("key.deserializer", "org.springframework.kafka.support.serializer.JsonDeserializer");
-      consumerProperties.put("value.deserializer", "org.springframework.kafka.support.serializer.JsonDeserializer");
-      consumerProperties.put(JsonDeserializer.TRUSTED_PACKAGES, "inventory.api.kafka.messages");
+      consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+      consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupID);
+      consumerProperties.put(ConsumerConfig.CLIENT_ID_CONFIG, consumerClientID);
+      consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, consumerKeyDeserializer);
+      consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, consumerValueDeserializer);
+      consumerProperties.put(JsonDeserializer.TRUSTED_PACKAGES, consumerTrustedPackages);
     }
     return consumerProperties;
   }
@@ -72,8 +90,8 @@ public class OrderCompletionListenerTest {
     assertTrue(kafkaOperations != null, "Missing KafkaOperations bean");
     assertTrue(kafkaBroker != null, "Missing KafkaBroker bean");
 
-    log.info("[CONFIG] spring.embedded.kafka.brokers = " + brokerAddresses);
-    log.info("[CONFIG] events.api.orders.topic = " + topicName);
+    log.info("[CONFIG] spring.kafka.bootstrap.servers = " + bootstrapServers);
+    log.info("[CONFIG] events.api.orders.topic = " + ordersTopicName);
   }
 
   // Testcase: order placed for 10 units of some item in inventory
@@ -85,14 +103,15 @@ public class OrderCompletionListenerTest {
   
     // Send OrderCompletedNotice
     OrderCompletedNotice message = new OrderCompletedNotice(3, 10);
-    kafkaOperations.send(topicName, message).addCallback(
+    kafkaOperations.send(ordersTopicName, message).addCallback(
         this::onSendSuccess,
         ex -> fail("Unable to send OrderCompleted notification due to : " + ex.getMessage()));
     
-    // Verify listener posted invalid notice
+    // Verify InventoryService posted "updated" notice
+    // Note that a KafkaConsumer is Closeable
     try (Consumer<String, InventoryUpdatedNotice> consumer = new KafkaConsumer<>(getKafkaConsumerConfig())) {
       
-      consumer.subscribe(Collections.singletonList(topicName)); 
+      consumer.subscribe(Collections.singletonList(inventoryTopicName)); 
       
       ConsumerRecords<String, InventoryUpdatedNotice> records = consumer.poll(Duration.ofSeconds(1));
       log.info("Found {} consumer records on first poll", records.count());
@@ -119,14 +138,15 @@ public class OrderCompletionListenerTest {
 
     // Send invalid OrderCompletedNotice
     OrderCompletedNotice message = new OrderCompletedNotice(1234, 10);
-    kafkaOperations.send(topicName, message).addCallback(
+    kafkaOperations.send(ordersTopicName, message).addCallback(
         this::onSendSuccess,
         ex -> fail("Unable to send OrderCompleted notification due to : " + ex.getMessage()));
     
-    // Verify listener posted invalid notice
+    // Verify InventoryService posted "invalid" notice
+    // Note that a KafkaConsumer is Closeable
     try (Consumer<String, InvalidOrderNotice> consumer = new KafkaConsumer<>(getKafkaConsumerConfig())) {
       
-      consumer.subscribe(Collections.singletonList(topicName)); 
+      consumer.subscribe(Collections.singletonList(inventoryTopicName)); 
       
       ConsumerRecords<String, InvalidOrderNotice> records = consumer.poll(Duration.ofSeconds(1));
       log.info("Found {} consumer records on first poll", records.count());

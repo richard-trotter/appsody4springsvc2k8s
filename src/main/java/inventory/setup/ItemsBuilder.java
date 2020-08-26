@@ -36,7 +36,19 @@ public class ItemsBuilder {
       this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
   
-  public void createItems() throws IOException {
+  @EventListener
+  public void handleApplicationEvent(ApplicationStartedEvent evt) {
+    try {
+      logger.info("Handling ApplicationStartedEvent");
+      this.createItems();
+    }
+    catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private void createItems() throws IOException {
     
     if( datasourceUrl.startsWith("jdbc:db2") ) {
       
@@ -73,18 +85,6 @@ public class ItemsBuilder {
     
     Long itemsCount = jdbcTemplate.queryForObject("select count(*) from ITEMS", Long.class);
     logger.info("After data load, Found "+itemsCount+" 'items'");
-  }
-
-  @EventListener
-  public void handleApplicationEvent(ApplicationStartedEvent evt) {
-
-     try {
-      this.createItems();
-    }
-    catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
   }
 
 }

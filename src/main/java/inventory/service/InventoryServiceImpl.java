@@ -45,7 +45,8 @@ public class InventoryServiceImpl implements IInventoryService {
       return Optional.empty();
     
     ModelMapper modelMapper = new ModelMapper();
-    return Optional.of(modelMapper.map(entity, InventoryItemModel.class));
+    InventoryItemModel model = modelMapper.map(entity.get(), InventoryItemModel.class); 
+    return Optional.of(model);
   }
   
   /**
@@ -55,6 +56,7 @@ public class InventoryServiceImpl implements IInventoryService {
    */
   public void updateInventoryItem(InventoryItemModel itemModel) {
     ModelMapper modelMapper = new ModelMapper();    
-    itemsRepo.save(modelMapper.map(itemModel, InventoryItem.class));
+    InventoryItem entity = modelMapper.map(itemModel, InventoryItem.class); 
+    itemsRepo.save(entity);
   }
 }

@@ -20,9 +20,8 @@ import inventory.service.IInventoryService;
  * item ID and a count of items to remove from inventory. In this example, removing from
  * inventory is implemented by decrementing the persisted count of items in inventory.
  */
-// TODO: migrate to plain Kafka
 @Service
-@KafkaListener(topics = {"${events.api.orders.topic}"}, id = "inventory-service")
+@KafkaListener(topics = {"${events.api.orders.topic}"})
 public class OrderCompletionListener {
     private Logger logger = LoggerFactory.getLogger(OrderCompletionListener.class);
 
@@ -33,7 +32,7 @@ public class OrderCompletionListener {
     }
 
     @KafkaHandler
-    @SendTo("${events.api.orders.topic}")
+    @SendTo("${events.api.inventory.topic}")
     public Object handleOrderCompleted(OrderCompletedNotice orderNotice) {
         logger.info("Received : " + orderNotice);
 
@@ -44,18 +43,12 @@ public class OrderCompletionListener {
             inventoryItem.setStock(inventoryItem.getStock() - orderNotice.getCount());
             inventoryService.updateInventoryItem(inventoryItem);
             int currentStockUnits = inventoryItem.getStock();
-            String updateMessage = "Updated inventory for item: " + itemId + ", new stock: " + currentStockUnits;
-            logger.info(updateMessage);
+            logger.info("Updated inventory for item: " + itemId + ", new stock: " + currentStockUnits);
             return new InventoryUpdatedNotice(itemId, currentStockUnits);
         }
 
         logger.warn("Received OrderCompletedNotice for item that does not exist! [item={}]", itemId);
         return new InvalidOrderNotice(itemId);
-    }
-
-    @KafkaHandler
-    public void handleInvalidOrder(InvalidOrderNotice invalidOrder) {
-      // no action required by this OrderService
     }
 
     @KafkaHandler(isDefault = true)

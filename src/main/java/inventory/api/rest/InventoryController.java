@@ -18,6 +18,7 @@ import inventory.service.IInventoryService;
 /**
  * REST Controller providing endpoints for access to the Inventory of items.
  */
+// TODO: add a paging search with HATEOAS metadata in response body
 // TODO: add standalone client for live api test
 // TODO: verify conformance to REST status code coventions
 @RestController("inventoryController")

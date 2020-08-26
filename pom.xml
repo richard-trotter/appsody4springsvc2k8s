@@ -35,6 +35,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+    </dependency>
 
     <!-- 
       Use JUnit 5 
@@ -112,19 +116,6 @@
 	<!-- 
 		Inventory event processing 
 	-->
-    <dependency>
-      <groupId>com.ibm.cloud</groupId>
-      <artifactId>event-streams-spring-boot-starter</artifactId>
-      <scope>compile</scope>
-      <version>0.0.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ibm.cloud</groupId>
-      <artifactId>kafka-json-eventing-spring-boot-starter</artifactId>
-      <scope>compile</scope>
-      <version>0.0.2</version>
-    </dependency>
 
 
     <!-- 
