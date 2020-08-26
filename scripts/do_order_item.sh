@@ -35,7 +35,7 @@ echo "### GET item"
 curl -w "\nSTATUS: %{http_code}\n" http://${LOCATION}/demo/inventory/item/${ITEM_ID}
 echo ""
 echo "### POST item order simulation"
-curl -w "STATUS: %{http_code}\n" -X POST "http://${LOCATION}/demo/inventory/order?itemId=${ITEM_ID}&count=1"
+curl -w "STATUS: %{http_code}\n" -X POST "http://${LOCATION}/demo/util/order?itemId=${ITEM_ID}&count=1"
 echo ""
 sleep 2
 echo "### GET item"
