@@ -2,24 +2,28 @@ package inventory.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import inventory.api.model.InventoryItemModel;
 
 public interface IInventoryService {
 
   /**
-   * @return all items in inventory
+   * @return a page of items in inventory
    */
-    Optional<InventoryItemModel> getInventoryItem(long id);
+  Page<InventoryItemModel> getInventory(PageRequest pageRequest);
 
-    /**
-     * @return an indicated item in inventory
-     */
-    Iterable<InventoryItemModel> getInventory();
+  /**
+   * @return an indicated item in inventory
+   */
+  Optional<InventoryItemModel> getInventoryItem(long id);
 
-    /**
-     * Update a persisted item
-     * 
-     * @param itemModel
-     */
-    public void updateInventoryItem(InventoryItemModel itemModel);
+  /**
+   * Update a persisted item
+   * 
+   * @param itemModel
+   */
+  public void updateInventoryItem(InventoryItemModel itemModel);
+
 }

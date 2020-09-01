@@ -17,11 +17,12 @@ Similarities of note:
 
 This alternative implementation differs as follows. 
 
-* makes use of [Appsody](https://appsody.dev) to assist development for cloud-native deployment
+* makes use of [Appsody](https://appsody.dev) to assist development for Kubernetes deployment
 * uses `spring-kafka` to simplify integration as a Kafka Consumer
 * provides Kafka Consumer configuration via Spring application properties
 * uses `spring-kafka-test` to provide an embedded Kafka implementation for `mvn test`
 * uses `h2` to provide an embedded relational database implementation for `mvn test`
+* uses `spring-hateoas` and `spring-data-commons` to provide a paged response to an inventory items query, with response body content type `application/hal+json`
 * represents a "solution component developer" role bias, assuming that the solution CI/CD pipeline and integration test cluster setup are the responsibility of some other role  
 
 This sample was bootstrapped into existence with Appsody, using the Spring Boot Appsody stack.
