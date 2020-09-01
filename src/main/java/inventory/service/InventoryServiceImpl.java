@@ -1,11 +1,11 @@
 package inventory.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import inventory.api.model.InventoryItemModel;
@@ -27,14 +27,13 @@ public class InventoryServiceImpl implements IInventoryService {
   /**
    * @return all items in inventory
    */
-  public Iterable<InventoryItemModel> getInventory() {
+  public Page<InventoryItemModel> getInventory(PageRequest pageRequest) {
     ModelMapper modelMapper = new ModelMapper();
-    List<InventoryItemModel> acc = new ArrayList<>();
-    itemsRepo.findAll().iterator()
-        .forEachRemaining(entity -> acc.add(modelMapper.map(entity, InventoryItemModel.class)));
-    return acc;
+    return itemsRepo.findAll(pageRequest)
+        .map(entity -> modelMapper.map(entity, InventoryItemModel.class));
   }
-
+  
+  
   /**
    * @return an indicated item in inventory
    */

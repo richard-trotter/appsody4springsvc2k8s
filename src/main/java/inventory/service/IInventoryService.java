@@ -2,6 +2,9 @@ package inventory.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import inventory.api.model.InventoryItemModel;
 
 public interface IInventoryService {
@@ -12,9 +15,9 @@ public interface IInventoryService {
     Optional<InventoryItemModel> getInventoryItem(long id);
 
     /**
-     * @return an indicated item in inventory
+     * @return a page of items in inventory
      */
-    Iterable<InventoryItemModel> getInventory();
+    Page<InventoryItemModel> getInventory(PageRequest pageRequest);
 
     /**
      * Update a persisted item

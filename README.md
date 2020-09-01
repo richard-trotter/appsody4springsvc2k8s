@@ -22,6 +22,7 @@ This alternative implementation differs as follows.
 * provides Kafka Consumer configuration via Spring application properties
 * uses `spring-kafka-test` to provide an embedded Kafka implementation for `mvn test`
 * uses `h2` to provide an embedded relational database implementation for `mvn test`
+* uses `spring-hateos` and `spring-data-common` to provide a pageable "items" query response and "next link" response header
 * represents a "solution component developer" role bias, assuming that the solution CI/CD pipeline and integration test cluster setup are the responsibility of some other role  
 
 This sample was bootstrapped into existence with Appsody, using the Spring Boot Appsody stack.
