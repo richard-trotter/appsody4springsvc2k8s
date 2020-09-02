@@ -32,8 +32,10 @@ public class Main {
     Environment env = evt.getApplicationContext().getEnvironment();
     
     String[] plist = {
+        "spring.profiles.active",
         "spring.datasource.url",
-        "spring.kafka.bootstrap-servers"
+        "spring.kafka.bootstrap-servers",
+        "spring.cloud.kubernetes.enabled",
     };
 
     for( String pname : plist ) 

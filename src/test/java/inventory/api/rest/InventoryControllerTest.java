@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 
+import inventory.api.model.InventoryItemModel;
+
 @ActiveProfiles(profiles = "test")
 @SpringBootTest
 @WebAppConfiguration
@@ -51,18 +53,24 @@ public class InventoryControllerTest {
     assertTrue(controller != null, "Missing InventoryController bean");
   }
 
-  // TODO: add test for get item by id
   // TODO: add test coverage for error cases
 
   @Test
-  public void whenGetItems_thenOkNotEmpty() throws Exception {
+  public void whenGetSelectedItem_thenOkNotEmpty() throws Exception {
 
+    int itemId = 2;
+    
     MockHttpServletResponse response = mockMvc.perform(
-          get("/inventory/items").accept(MediaType.APPLICATION_JSON_VALUE))
+          get("/inventory/items/"+itemId).accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn().getResponse();
 
     String body = response.getContentAsString();
-    assertTrue(body.contains("Punched-card tabulating machines"), "Missing expected items");
+    ObjectMapper mapper = new ObjectMapper();       
+    ObjectReader reader = mapper.readerFor(InventoryItemModel.class);
+    
+    InventoryItemModel item = reader.readValue(body);
+    
+    assertEquals( itemId, item.getId(), "wrong InventoryItemModel id" );
   }
 
 

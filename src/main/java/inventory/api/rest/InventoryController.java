@@ -31,7 +31,7 @@ import inventory.service.IInventoryService;
  * REST Controller providing endpoints for access to the Inventory of items.
  */
 // TODO: add standalone client for live api test
-// TODO: verify conformance to REST status code coventions
+// TODO: verify conformance to REST status code constraints
 @RestController("inventoryController")
 @RequestMapping(value = "/inventory", method = RequestMethod.GET)
 public class InventoryController {

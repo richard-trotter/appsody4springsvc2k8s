@@ -60,4 +60,9 @@ spring:
       client-id: inventory-service
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      
+  cloud:
+    kubernetes:
+      enabled: true
+
   
