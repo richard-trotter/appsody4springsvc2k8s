@@ -29,7 +29,7 @@ public class ItemsBuilder {
 
   private JdbcTemplate jdbcTemplate;
   
-  @Value("${spring.datasource.url")
+  @Value("${spring.datasource.url}")
   private String datasourceUrl;
 
   public ItemsBuilder(DataSource dataSource) {
@@ -50,6 +50,8 @@ public class ItemsBuilder {
 
   private void createItems() throws IOException {
     
+    logger.info("Initializing 'items' database using spring.datasource.url="+datasourceUrl);
+
     if( datasourceUrl.startsWith("jdbc:db2") ) {
       
       Long itemsTableCount = jdbcTemplate.queryForObject("select count(*) from SYSCAT.TABLES where TABNAME='ITEMS'", Long.class);

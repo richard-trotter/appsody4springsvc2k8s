@@ -1,5 +1,7 @@
 package inventory;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -31,8 +33,9 @@ public class Main {
     
     Environment env = evt.getApplicationContext().getEnvironment();
     
+    logger.info("[CONFIG] active Spring profiles: "+Arrays.asList(env.getActiveProfiles()));
+    
     String[] plist = {
-        "spring.profiles.active",
         "spring.datasource.url",
         "spring.kafka.bootstrap-servers",
         "spring.cloud.kubernetes.enabled",

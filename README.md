@@ -68,6 +68,13 @@ The Appsody starter application includes implementations for a K8s `livenessProb
 
 There are a small set of tests for the application's `RestController` and `KafkaListener` as well. 
 
+## Run with Appsody
+
+The `appsody` CLI can be used to run within a docker container, using a Docker image built by `appsody`. 
+
+``` bash
+appsody run --docker-options "--env spring_profiles_active=dev --env db2host=192.168.1.66"
+```
 ## Running the sample in a Kubernetes cluster
 
 Solution *integration test* is expected to occur in a shared Kubernetes (K8s) cluster. However, it's a good practice for the cloud native microservice developer to perform functional test of the component, as deployed within a K8s cluster, before delivery of code to the shared code repository - and thereby triggering CI/CD. This is consistent with "Out of Process Component Test", as described here:

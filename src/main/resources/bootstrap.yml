@@ -4,6 +4,7 @@ spring:
     name: inventory-svc
   cloud:
     kubernetes:
+      enabled: true          
       secrets:
         enabled: true
         paths: /etc/secrets/messagebroker,/etc/secrets/inventorydb
@@ -14,5 +15,6 @@ spring:
   profiles: dev,test
   cloud:
     kubernetes:
+      enabled: false          
       secrets:
         enabled: false          
