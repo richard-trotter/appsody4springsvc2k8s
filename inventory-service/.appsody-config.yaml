@@ -1,0 +1,2 @@
+project-name: inventory-service
+stack: dev.local/appsody/java-spring-boot2:0.3
