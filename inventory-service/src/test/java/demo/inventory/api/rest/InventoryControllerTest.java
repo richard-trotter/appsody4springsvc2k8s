@@ -44,6 +44,8 @@ public class InventoryControllerTest {
 
   private static final Logger log = LoggerFactory.getLogger(InventoryControllerTest.class);
 
+  private static final String resourcePath = "/inventory/item";
+  
   @Autowired
   MockMvc mockMvc;
   
@@ -64,7 +66,7 @@ public class InventoryControllerTest {
     int itemId = 2;
     
     MockHttpServletResponse response = mockMvc.perform(
-          get("/inventory/items/"+itemId).accept(MediaType.APPLICATION_JSON_VALUE))
+          get(resourcePath+"/"+itemId).accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn().getResponse();
 
     String body = response.getContentAsString();
@@ -81,7 +83,7 @@ public class InventoryControllerTest {
   public void whenGetItemsPage_thenOkAndHasLink() throws Exception {
 
     MockHttpServletResponse response = mockMvc
-        .perform(get("/inventory/items?page=1&size=2").accept(MediaType.APPLICATION_JSON_VALUE))
+        .perform(get(resourcePath+"?page=1&size=2").accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn().getResponse();
 
     String body = response.getContentAsString();
@@ -123,7 +125,7 @@ public class InventoryControllerTest {
     int expectedPageNumber = 0;
 
     // execute request and verify response status and content type
-    MockHttpServletResponse response = mockMvc.perform(get("/inventory/items").accept(MediaType.APPLICATION_JSON_VALUE))
+    MockHttpServletResponse response = mockMvc.perform(get(resourcePath).accept(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(status().isOk()).andReturn().getResponse();
 
     String body = response.getContentAsString();

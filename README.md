@@ -1,5 +1,23 @@
 # Using Appsody in Spring Microservice Development for Kubernetes
 
+## Contents
+* [Introduction](#Introduction)  
+* [REST API](#REST-API)  
+* [Messaging API](#Messaging-API)  
+* [Running the sample](#Running-the-sample)  
+* [Test data setup](#Test-data-setup)  
+* [Unit Test](#Unit-Test)  
+* [Run with Appsody](#Run-with-Appsody)  
+* [Running the sample in a Kubernetes cluster](#Running-the-sample-in-a-Kubernetes-cluster)  
+  * [Specifying the AppsodyApplication name](#Specifying-the-AppsodyApplication-name)  
+  * [Specifying docker image properties](#Specifying-docker-image-properties)  
+  * [Service integration configuration acquisition for Kubernetes](#Service-integration-configuration-acquisition-for-Kubernetes)  
+  * [Using Appsody deploy](#Using-Appsody-deploy)  
+* [Run in IBM Cloud Kubernetes Services (IKS)](#Run-in-IBM-Cloud-Kubernetes-Services-(IKS))  
+  * [AppsodyApplication configuration changes for IKS](#AppsodyApplication-configuration-changes-for-IKS)  
+  * [Deploy to IKS](#Deploy-to-IKS)  
+* [References](#References)  
+
 ## Introduction
 
 This is a sample application motivated by the following [IBM Cloud Architectures](https://www.ibm.com/cloud/architecture/architectures/microservices) article, which references an archetype "Storefront Shopping" application and its supporting "Inventory" microservice.
@@ -23,13 +41,16 @@ This alternative implementation differs as follows.
 * uses `spring-kafka-test` to provide an embedded Kafka implementation for `mvn test`
 * uses `h2` to provide an embedded relational database implementation for `mvn test`
 * uses `spring-hateos` and `spring-data-common` to provide a pageable "items" query response and "next link" response header
+* uses a maven multi-module project organization, with a separate module for standalone REST client test driver
 * represents a "solution component developer" role bias, assuming that the solution CI/CD pipeline and integration test cluster setup are the responsibility of some other role  
 
-This sample was bootstrapped into existence with Appsody, using the Spring Boot Appsody stack.
+The inventory service module was bootstrapped into existence with Appsody, using the Spring Boot Appsody stack.
 
     appsody init incubator/java-spring-boot2 
 
 That bootstrapping produces all of the source supporting a minimal (or "starter") Spring Boot application, which can than be deployed to a Kubernetes cluster with `appsody deploy`. That deployment involves use of the [Appsody operator](https://github.com/appsody/appsody-operator/blob/master/doc/user-guide.md) for K8s, and the `AppsodyApplication` K8s custom resource definition. In other words, the sample application is deployed to K8s as a K8s Custom Resource of type **AppsodyApplication**. 
+
+The inventory service uses Spring Boot v2.3. 
 
 ## REST API
 
@@ -39,7 +60,7 @@ There is a simple REST API available to exercise the running application. An exa
     {"id":13401,"name":"Dayton Meat Chopper",..."stock":998,...
     STATUS: 200
 
-    $ curl -w "STATUS: %{http_code}\n" -X POST 'http://localhost:8080/demo/util/order?itemId=13401&count=1'
+    $ curl -w "\nSTATUS: %{http_code}\n" -X POST 'http://localhost:8080/demo/util/order?itemId=13401&count=1'
     STATUS: 200
 
     $ curl -w "\nSTATUS: %{http_code}\n" http://localhost:8080/demo/inventory/item/13401
@@ -54,7 +75,12 @@ Step (b) above, where we simulate order fulfillment, actually involves the posti
 
 ## Running the sample
 
-The sample is built for execution within a local development scenario, component test, and integration test. The expectation is that DB2 and Kafka service integration configuration may be different for development and test. The default configuration is for integration test. To run the development configuration, use the Spring `dev` configuration profile (e.g.: run with `--spring.profiles.active=dev`). A template configuration file is provided to assist setup for `dev` overrides: `application-dev-template.yml`. Copy this file to `application-dev.yml` and replace variable references with your service integration configuration parameters.
+The sample is built for execution within a local development scenario, component test, and integration test. The expectation is that DB2 and Kafka service integration configuration is likely to be different for development and test. The default configuration is for integration test. To run the development configuration, use the Spring `dev` configuration profile (e.g.: run with `--spring.profiles.active=dev`). A template configuration file is provided to assist setup for `dev` overrides: `application-dev-template.yml`. Copy this file to `application-dev.yml` and replace variable references with your service integration configuration parameters.
+
+``` bash
+cd inventory-service
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 ## Test data setup
 
@@ -72,8 +98,12 @@ There are a small set of tests for the application's `RestController` and `Kafka
 
 The `appsody` CLI can be used to run within a docker container, using a Docker image built by `appsody`. 
 
+In this Spring `dev` profile example, the dependent Kafka and DB2 services are expected to be available on host `addr`.
+
 ``` bash
-appsody run --docker-options "--env spring_profiles_active=dev --env db2host=192.168.1.66"
+% appsody run --docker-options \
+    "--env spring_profiles_active=dev --env spring_cloud_kubernetes_enabled=false --env db2host=${addr} --env kafka_bootstrap=${addr}"
+
 ```
 ## Running the sample in a Kubernetes cluster
 

@@ -21,10 +21,12 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 import demo.inventory.api.model.InventoryItemModel;
 import io.restassured.RestAssured;
+import io.restassured.internal.path.json.mapping.JsonPathJackson2ObjectDeserializer;
+import io.restassured.mapper.factory.DefaultJackson2ObjectMapperFactory;
 import io.restassured.path.json.JsonPath;
+import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.response.Response;
 
-// TODO: need a test for "get one".
 // TODO: need to document "run from command line"
 // TODO: enable run against specified api server
 // TODO: need a test for model unmarshaling
@@ -35,7 +37,8 @@ public class InventoryControllerLiveTest {
 
   private static final String JSON = MediaType.APPLICATION_JSON.toString();
 
-  private static final String apiServerUri = "http://localhost:8080/demo/inventory/items";
+  private static String serverUri = "http://localhost:8080";
+  private static final String resourcePath = "/demo/inventory/item";
   
   // Expected test dataset size
   private static final int expectedTotalItems = 12;
@@ -44,7 +47,12 @@ public class InventoryControllerLiveTest {
   
   @BeforeAll
   static void beforeClass() {
-    log.info(String.format("Beginning test run using API server: \"%s\"", apiServerUri));
+    
+    String p = System.getProperty("serverUri");
+    if( p != null )
+      serverUri = p;
+    
+    log.info(String.format("Beginning test run using API server: \"%s\"", serverUri));
   }
   
   
@@ -66,7 +74,7 @@ public class InventoryControllerLiveTest {
     try {
       response = RestAssured
         .given().accept(JSON).expect().statusCode(200)
-        .when().get(apiServerUri);
+        .when().get(serverUri+resourcePath);
     }
     catch( Throwable ex) {
       fail(ex.toString());
@@ -107,7 +115,7 @@ public class InventoryControllerLiveTest {
     try {
       response = RestAssured
         .given().accept(JSON).expect().statusCode(200)
-        .when().get(apiServerUri+"?page=1&size=7");
+        .when().get(serverUri+resourcePath+"?page=1&size=7");
     }
     catch( Throwable ex) {
       fail(ex.toString());
@@ -148,7 +156,7 @@ public class InventoryControllerLiveTest {
     try {
       response = RestAssured
         .given().accept(JSON).expect().statusCode(200)
-        .when().get(apiServerUri+"?page=1&size=2");
+        .when().get(serverUri+resourcePath+"?page=1&size=2");
     }
     catch( Throwable ex) {
       fail(ex.toString());
@@ -165,7 +173,7 @@ public class InventoryControllerLiveTest {
     String[] parts = linkValue.split(";");
     assertTrue(parts.length == 2, "Expected 2 parts to link header");
     
-    assertTrue(parts[0].contains("/items?page=2&size=2"), "Wrong 'next' link url");
+    assertTrue(parts[0].contains(resourcePath+"?page=2&size=2"), "Wrong 'next' link url");
     assertTrue(parts[1].equals("rel=\"next\""), "Wrong link relation value");
   }
 
@@ -181,7 +189,7 @@ public class InventoryControllerLiveTest {
     try {
       response = RestAssured
         .given().accept(JSON).expect().statusCode(200)
-        .when().get(apiServerUri+"/13402");
+        .when().get(serverUri+resourcePath+"/13402");
     }
     catch( Throwable ex) {
       fail(ex.toString());
@@ -216,30 +224,27 @@ public class InventoryControllerLiveTest {
     try {
       response = RestAssured
         .given().accept(JSON).expect().statusCode(200)
-        .when().get(apiServerUri+"?page=1&size=2");
+        .when().get(serverUri+resourcePath+"?page=1&size=2");
     }
     catch( Throwable ex) {
       fail(ex.toString());
       return;
     }
-  
-    //String content = response.getBody().prettyPrint();
-    
-    // Get the 'content' part of the response page
-    JsonPath path = response.jsonPath();
-    String content = path.getString("content");
-    assertNotNull(content, "Missing response page content");
+ 
+    //response.getBody().prettyPrint();
 
+    // Verify the response has 'content'
+    String responseBody = response.getBody().asString(); 
+    assertTrue(responseBody.startsWith("{\"content\":"), "Missing response page content");
+    
     // Unmarshal the JSON response page content as a List of InventoryItemModel
-    ObjectMapper mapper = new ObjectMapper();       
-    ObjectReader reader = mapper.readerForListOf(InventoryItemModel.class);
-    try {
-      List<InventoryItemModel> items = reader.readValue(content);
-      log.info("Got InventoryItemModel list of length: "+items.size());
-    }
-    catch (IOException e) {
-      fail(e);
-    }
+    JsonPathConfig config = new JsonPathConfig()
+        .defaultObjectDeserializer(new JsonPathJackson2ObjectDeserializer(new DefaultJackson2ObjectMapperFactory()));
+    JsonPath path = response.jsonPath(config);
+    List<InventoryItemModel> items = path.getList("content", InventoryItemModel.class);
+    assertTrue(items.size() == 2, "Wrong items content length for items page");
+
+    log.info("Got InventoryItemModel list of length: "+items.size());
 
   }
 

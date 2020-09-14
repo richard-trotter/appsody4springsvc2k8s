@@ -29,12 +29,14 @@ import demo.inventory.service.IInventoryService;
 /**
  * REST Controller providing endpoints for access to the Inventory of items.
  */
-// TODO: verify conformance to REST status code constraints
+//TODO: verify conformance to REST status code constraints
 @RestController("inventoryController")
 @RequestMapping(value = "/inventory")
 public class InventoryController {
 
     private final static Logger logger = LoggerFactory.getLogger(InventoryController.class);
+    
+    private static final String resourcePath = "/item";
 
     // Suitable for the configured test dataset size
     protected static final int DEFAULT_PAGE_SIZE = 6;
@@ -53,7 +55,7 @@ public class InventoryController {
     /**
      * @return a page of items in inventory
      */
-    @GetMapping(path="/items", params={"page","size"})
+    @GetMapping(path=resourcePath, params={"page","size"})
     @ResponseBody
     public Page<InventoryItemModel> getInventory(@RequestParam Integer page, @RequestParam Integer size, HttpServletResponse response) {
       
@@ -77,7 +79,7 @@ public class InventoryController {
     /**
      * @return all items in inventory
      */
-    @GetMapping("/items")
+    @GetMapping(resourcePath)
     @ResponseBody
     public Page<InventoryItemModel> getInventory() {
 
@@ -88,7 +90,7 @@ public class InventoryController {
     /**
      * @return an indicated item in inventory
      */
-    @GetMapping("/items/{itemId}")
+    @GetMapping(resourcePath+"/{itemId}")
     @ResponseBody
     public Optional<InventoryItemModel> getInventoryItem(@PathVariable(value = "itemId") long itemId) {
         return inventoryService.getInventoryItem(itemId);

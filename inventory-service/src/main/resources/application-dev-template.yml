@@ -1,17 +1,26 @@
 #
 # These are overrides for local dev/test.
 #
-# This file contains service integration passwords.
+# This file contains service integration credentials. DO NOT DELIVER!
 #
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+      
 spring:
+
   devtools:
     restart:
       additional-paths: ./target
       trigger-file: .appsody-spring-trigger      
+
   datasource:
     url: ${INVENTORY_URL}
     username: ${INVENTORY_USER}
     password: ${INVENTORY_PWD}
+
   kafka:
-    bootstrap-servers: ${TOPIC_SERVERS}  
-      
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    
