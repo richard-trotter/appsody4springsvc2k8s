@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import demo.inventory.api.kafka.OrderCompletionListener;
@@ -24,6 +25,7 @@ import demo.inventory.api.kafka.OrderCompletionListener;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
+@ContextConfiguration(classes = {Main.class})
 @EnableAutoConfiguration(exclude={KafkaAutoConfiguration.class})
 public class MainTests {
 

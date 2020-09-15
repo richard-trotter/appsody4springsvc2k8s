@@ -27,10 +27,6 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.response.Response;
 
-// TODO: need to document "run from command line"
-// TODO: enable run against specified api server
-// TODO: need a test for model unmarshaling
-
 @EnabledIfSystemProperty(named = "spring.profiles.active", matches = ".*live-api-test.*")
 public class InventoryControllerLiveTest {
   private static final Logger log = LoggerFactory.getLogger(InventoryControllerLiveTest.class);

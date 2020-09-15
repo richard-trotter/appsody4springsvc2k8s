@@ -15,12 +15,18 @@ or:
 % appsody run
 ```
 
-To run the live api test locally:
+To run the live api test locally against a local service under test:
 
 ``` bash
 % cd inventory-client-test
-% mvn -Dspring.profiles.active=live-api-test surefire:test
+% mvn test
 ```
 
+To run the live api test locally against a remote service, specify the `serverUri` system property:
+
+``` bash
+% cd inventory-client-test
+% mvn test -DserverUri=http://192.168.1.66:8080
+```
 
 
