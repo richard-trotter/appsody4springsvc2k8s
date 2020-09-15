@@ -1,4 +1,4 @@
-package demo.inventory.jpa;
+package demo.inventory.persistence;
 
 import java.util.List;
 import java.util.Optional;

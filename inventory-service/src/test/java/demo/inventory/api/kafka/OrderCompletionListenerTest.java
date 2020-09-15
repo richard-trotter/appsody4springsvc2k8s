@@ -26,6 +26,8 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 
 import demo.inventory.api.message.OrderCompletedNotice;
+import demo.inventory.api.messaging.InvalidInventoryItemEvent;
+import demo.inventory.api.messaging.InventoryUpdatedEvent;
 
 @ActiveProfiles(profiles = "test")
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, properties = "opentracing.spring.web.enabled=false")

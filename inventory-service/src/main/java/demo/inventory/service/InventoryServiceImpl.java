@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import demo.inventory.api.model.InventoryItemModel;
-import demo.inventory.jpa.InventoryItem;
-import demo.inventory.jpa.InventoryRepo;
+import demo.inventory.persistence.InventoryItem;
+import demo.inventory.persistence.InventoryRepo;
 
 
 /**

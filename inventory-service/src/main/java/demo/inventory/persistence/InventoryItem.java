@@ -1,4 +1,4 @@
-package demo.inventory.jpa;
+package demo.inventory.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

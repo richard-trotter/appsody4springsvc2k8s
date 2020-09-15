@@ -1,4 +1,4 @@
-package demo.inventory.api.kafka;
+package demo.inventory.api.messaging;
 
 import java.util.Optional;
 
