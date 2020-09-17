@@ -1,12 +1,15 @@
 package demo.inventory.persistence;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 /**
  * Entity: inventorydb.items
@@ -21,27 +24,26 @@ public class InventoryItem {
     private long id;
 
     // Item name
-    @NotNull
+    @NotBlank
     private String name;
 
     // Item description
-    @NotNull
+    @NotBlank
     @Column(length = 3072)
     private String description;
 
     // Item price
-    @NotNull
-    private int price;
+    @Positive
+    private BigDecimal price;
 
     // Item img_alt
     private String img_alt;
 
     // Item img
-    @NotNull
     private String img;
 
     // Item stock
-    @NotNull
+    @Positive
     private int stock;
 
     public InventoryItem() {
@@ -51,7 +53,7 @@ public class InventoryItem {
         this.id = id;
     }
 
-    public InventoryItem(String name, String description, int price, String img_alt, String img, int stock) {
+    public InventoryItem(String name, String description, BigDecimal price, String img_alt, String img, int stock) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -84,11 +86,11 @@ public class InventoryItem {
         this.name = value;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int value) {
+    public void setPrice(BigDecimal value) {
         this.price = value;
     }
 

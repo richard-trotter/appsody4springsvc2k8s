@@ -49,6 +49,7 @@ public class InventoryServiceImpl implements IInventoryService {
     return Optional.of(model);
   }
   
+
   /**
    * Update a persisted item
    * 
@@ -58,5 +59,33 @@ public class InventoryServiceImpl implements IInventoryService {
     ModelMapper modelMapper = new ModelMapper();    
     InventoryItem entity = modelMapper.map(itemModel, InventoryItem.class); 
     itemsRepo.save(entity);
+  }
+
+
+  /**
+   * Create a new persisted item.
+   * 
+   * @param itemModel
+   * @return a copy of the item with its new generated id
+   */
+  @Override
+  public InventoryItemModel createInventoryItem(InventoryItemModel itemModel) {
+    ModelMapper modelMapper = new ModelMapper();    
+    InventoryItem entity = modelMapper.map(itemModel, InventoryItem.class); 
+    InventoryItem newPersistedEntity = itemsRepo.save(entity);
+    InventoryItemModel itemModelWithId = modelMapper.map(newPersistedEntity, InventoryItemModel.class);
+    return itemModelWithId;
+  }
+
+
+  /**
+   * Delete a persisted item.
+   * 
+   * @param itemId
+   */
+  @Override
+  public void deleteInventoryItem(long itemId) {
+    itemsRepo.deleteById(itemId);
+    return;
   }
 }

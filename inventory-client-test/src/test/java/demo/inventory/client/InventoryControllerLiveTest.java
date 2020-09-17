@@ -1,11 +1,17 @@
 package demo.inventory.client;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -15,9 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import demo.inventory.api.model.InventoryItemModel;
 import io.restassured.RestAssured;
@@ -141,8 +149,6 @@ public class InventoryControllerLiveTest {
   }
 
 
-  // tests
-  
   @Test
   public void whenPageRetrieved_thenNextLinkPresent() {
     
@@ -174,42 +180,14 @@ public class InventoryControllerLiveTest {
   }
 
 
-  // tests
-  
   @Test
   public void whenItemRetrieved_thenItemObjectPresent() {
     
     // Expecting an item with id 13402
-  
-    Response response;
-    try {
-      response = RestAssured
-        .given().accept(JSON).expect().statusCode(200)
-        .when().get(serverUri+resourcePath+"/13402");
-    }
-    catch( Throwable ex) {
-      fail(ex.toString());
-      return;
-    }
-  
-    //String content = response.getBody().prettyPrint();
+    InventoryItemModel item = retrieveItemAtLocation(serverUri+resourcePath+"/13402");
     
-    ObjectMapper mapper = new ObjectMapper();       
-
-    // Unmarshal the JSON response body as an instance of InventoryItemModel
-    ObjectReader reader = mapper.readerFor(InventoryItemModel.class);
-    try {
-      InventoryItemModel item = reader.readValue(response.getBody().asInputStream());
-      log.info("Got InventoryItemModel with id: "+item.getId());
-    }
-    catch (IOException e) {
-      fail(e);
-    }
-    
+    log.info("Got InventoryItemModel with id: "+item.getId());
   }
-
-
-  // tests
   
   @Test
   public void whenPageRetrieved_thenItemListPresent() {
@@ -242,6 +220,88 @@ public class InventoryControllerLiveTest {
 
     log.info("Got InventoryItemModel list of length: "+items.size());
 
+  }
+
+
+  @Test
+  public void whenCreateItem_thenCreatedAndFound() throws Exception {
+  
+    // create a testcase item sans id 
+    InventoryItemModel testItem = new InventoryItemModel(
+        "Thinkpad"              /*name*/, 
+        "Laptop computer"       /*description*/, 
+        new BigDecimal(1525.50) /*price*/, 
+        null                    /*img_alt*/, 
+        "tp450.jpg"             /*img*/, 
+        7                       /*stock*/);
+  
+    ObjectMapper mapper = new ObjectMapper();       
+
+    // create http request body 
+    ObjectWriter writer = mapper.writerFor(InventoryItemModel.class);
+    String body = writer.writeValueAsString(testItem);
+
+    // verify 201 http response status and presence of location response header
+    Response response;
+    try {
+      response = RestAssured
+        .given().body(body).contentType(JSON)
+        .expect().statusCode(201).expect().header(HttpHeaders.LOCATION, not(nullValue()))
+        .when().post(serverUri+resourcePath);
+    }
+    catch( Throwable ex) {
+      fail(ex.toString());
+      return;
+    }
+  
+    // verify location response header value
+    String locationValue = response.getHeader(HttpHeaders.LOCATION);
+    InventoryItemModel item = retrieveItemAtLocation(locationValue);
+    assertTrue( item.getId() > 0, "get new item response does not include new item id" );
+    
+    log.info("Created new item with id: "+item.getId()+"\n"+item.toString());
+    
+    // delete test data
+    try {
+      RestAssured
+        .given()
+        .expect().statusCode(200)
+        .when().delete(serverUri+resourcePath+"/"+item.getId());
+    }
+    catch( Throwable ex) {
+      fail(ex.toString());
+      return;
+    }
+  }
+
+
+  private InventoryItemModel retrieveItemAtLocation(String resourceUri) {
+    
+    Response response;
+    try {
+      response = RestAssured
+        .given().accept(JSON).expect().statusCode(200)
+        .when().get(resourceUri);
+    }
+    catch( Throwable ex) {
+      fail(ex.toString());
+      return null;
+    }
+  
+    //String content = response.getBody().prettyPrint();
+    
+    ObjectMapper mapper = new ObjectMapper();       
+
+    // Unmarshal the JSON response body as an instance of InventoryItemModel
+    ObjectReader reader = mapper.readerFor(InventoryItemModel.class);
+    try {
+      InventoryItemModel item = reader.readValue(response.getBody().asInputStream());
+      return item;
+    }
+    catch (IOException e) {
+      fail(e);
+      return null;
+    }
   }
 
 }

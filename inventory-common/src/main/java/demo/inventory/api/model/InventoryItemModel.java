@@ -1,14 +1,19 @@
 package demo.inventory.api.model;
 
+import java.math.BigDecimal;
+
+import javax.validation.constraints.NotBlank;
+
 public class InventoryItemModel {
 
     private long id;
 
+    @NotBlank
     private String name;
 
     private String description;
 
-    private int price;
+    private BigDecimal price;
 
     private String img_alt;
 
@@ -23,7 +28,7 @@ public class InventoryItemModel {
         this.id = id;
     }
 
-    public InventoryItemModel(String name, String description, int price, String img_alt, String img, int stock) {
+    public InventoryItemModel(String name, String description, BigDecimal price, String img_alt, String img, int stock) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -56,11 +61,11 @@ public class InventoryItemModel {
         this.name = value;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int value) {
+    public void setPrice(BigDecimal value) {
         this.price = value;
     }
 
@@ -95,5 +100,65 @@ public class InventoryItemModel {
           + ", description=" + description 
           + ", price=" + price
           + ", stock=" + stock + "]";
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((description == null) ? 0 : description.hashCode());
+      result = prime * result + (int) (id ^ (id >>> 32));
+      result = prime * result + ((img == null) ? 0 : img.hashCode());
+      result = prime * result + ((img_alt == null) ? 0 : img_alt.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      result = prime * result + ((price == null) ? 0 : price.hashCode());
+      result = prime * result + stock;
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      InventoryItemModel other = (InventoryItemModel) obj;
+      if (description == null) {
+        if (other.description != null)
+          return false;
+      }
+      else if (!description.equals(other.description))
+        return false;
+      if (id != other.id)
+        return false;
+      if (img == null) {
+        if (other.img != null)
+          return false;
+      }
+      else if (!img.equals(other.img))
+        return false;
+      if (img_alt == null) {
+        if (other.img_alt != null)
+          return false;
+      }
+      else if (!img_alt.equals(other.img_alt))
+        return false;
+      if (name == null) {
+        if (other.name != null)
+          return false;
+      }
+      else if (!name.equals(other.name))
+        return false;
+      if (price == null) {
+        if (other.price != null)
+          return false;
+      }
+      else if (!price.equals(other.price))
+        return false;
+      if (stock != other.stock)
+        return false;
+      return true;
     }
 }

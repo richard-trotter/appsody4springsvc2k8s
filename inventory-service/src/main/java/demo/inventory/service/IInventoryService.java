@@ -25,4 +25,18 @@ public interface IInventoryService {
      * @param itemModel
      */
     public void updateInventoryItem(InventoryItemModel itemModel);
+
+    /**
+     * Create a new persisted item
+     * 
+     * @param itemModel
+     */
+    public InventoryItemModel createInventoryItem(InventoryItemModel itemModel);
+    
+    /**
+     * Delete a persisted item
+     * 
+     * @param itemModel
+     */
+    public void deleteInventoryItem(long id);
 }
