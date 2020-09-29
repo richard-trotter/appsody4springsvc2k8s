@@ -21,7 +21,7 @@ public class TopicConfiguration {
   public NewTopic ordersTopic() {
     return new NewTopic(
         topicName  /* name */, 
-        1  /* numPartitions */, 
+                2  /* numPartitions */, 
         (short) 1  /* replicationFactor */);
   }
 }

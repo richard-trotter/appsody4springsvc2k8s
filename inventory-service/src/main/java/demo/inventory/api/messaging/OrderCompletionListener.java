@@ -1,5 +1,6 @@
 package demo.inventory.api.messaging;
 
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ import demo.inventory.service.IInventoryService;
  * inventory is implemented by decrementing the persisted count of items in inventory.
  */
 @Service
-@KafkaListener(topics = {"${events.api.orders.topic}"})
+@KafkaListener(topics = {"${events.api.orders.topic}"}, concurrency = "${events.api.orders.listeners}")
 public class OrderCompletionListener {
     private Logger logger = LoggerFactory.getLogger(OrderCompletionListener.class);
 
@@ -39,8 +41,10 @@ public class OrderCompletionListener {
 
     @KafkaHandler
     @SendTo("${events.api.inventory.topic}")
-    public Object handleOrderCompleted(OrderCompletedNotice orderNotice) {
-        logger.info("Received : " + orderNotice);
+    public Object handleOrderCompleted(OrderCompletedNotice orderNotice, MessageHeaders headers) {
+        logger.info("Received : " + orderNotice + headers.entrySet().stream()
+          .map( entry -> "\n  with header: "+entry.getKey()+" -> "+entry.getValue())
+          .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append));
 
         long itemId = orderNotice.getItemId();
         Optional<InventoryItemModel> optional = inventoryService.getInventoryItem(itemId);

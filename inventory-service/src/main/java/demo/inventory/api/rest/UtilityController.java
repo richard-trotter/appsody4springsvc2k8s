@@ -3,8 +3,7 @@ package demo.inventory.api.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.util.concurrent.SuccessCallback;
@@ -21,7 +20,7 @@ import demo.inventory.api.message.OrderCompletedNotice;
 /**
  * REST Controller providing non-api endpoints for access to utility operations.
  */
-@ConditionalOnBean(KafkaAutoConfiguration.class)
+@Profile("dev")
 @RestController("utilityController")
 @RequestMapping(value = "/util")
 public class UtilityController {

@@ -6,6 +6,7 @@
 * [Messaging API](#Messaging-API)  
 * [Running the sample](#Running-the-sample)  
 * [Test data setup](#Test-data-setup)  
+* [Test broker setup](#Test-broker-setup)
 * [Unit Test](#Unit-Test)  
 * [Run with Appsody](#Run-with-Appsody)  
 * [Running the sample in a Kubernetes cluster](#Running-the-sample-in-a-Kubernetes-cluster)  
@@ -84,9 +85,35 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 ## Test data setup
 
-With the `dev` configuration profile active, a TopicConfiguration bean will cause the required `orders` topic to be created by `spring-kafka`. 
-
 The sample requires a single 'items' table for the persisted inventory model. A `db2_ddl.sql` script is provided for creation of this table. A `insert_sample_data.sql` script is also provided for seeding this `items` table with sample data. With the `dev` configuration profile active, however, an ItemsBuilder bean will create the `items` table data on startup if needed - and recreate that data if it already exists. 
+
+## Test broker setup
+
+With the `dev` configuration profile active, a NewTopic bean will cause the required `orders` topic to be created by `spring-kafka`. 
+
+The Spring KafkaListener is configured for 2 Kafka consumers, or in other words for a concurrency level of 2. The `orders` topic is likewise created with 2 partitions.
+
+To facilitate visbility of consumer group, consumer, and topic partition associations, the Spring KafkaHandler is setup to log `MessageHeaders`. Example:
+
+``` bash
+INFO 46258 --- [ntainer#0-0-C-1] d.i.a.messaging.OrderCompletionListener  : Received : OrderCompletedNotice [itemId=13402, count=2]
+  with header: kafka_offset -> 10
+  with header: kafka_consumer -> org.apache.kafka.clients.consumer.KafkaConsumer@2eb18dd2
+  with header: kafka_timestampType -> CREATE_TIME
+  with header: kafka_receivedPartitionId -> 0
+  with header: kafka_receivedTopic -> orders
+  with header: kafka_receivedTimestamp -> 1601389530439
+  with header: kafka_groupId -> inventory-service
+--
+INFO 46258 --- [ntainer#0-1-C-1] d.i.a.messaging.OrderCompletionListener  : Received : OrderCompletedNotice [itemId=13402, count=2]
+  with header: kafka_offset -> 11
+  with header: kafka_consumer -> org.apache.kafka.clients.consumer.KafkaConsumer@9cebb02
+  with header: kafka_timestampType -> CREATE_TIME
+  with header: kafka_receivedPartitionId -> 1
+  with header: kafka_receivedTopic -> orders
+  with header: kafka_receivedTimestamp -> 1601389530443
+  with header: kafka_groupId -> inventory-service
+```
 
 ## Unit Test
 

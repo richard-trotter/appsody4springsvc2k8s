@@ -37,7 +37,6 @@ import demo.inventory.service.IInventoryService;
 /**
  * REST Controller providing endpoints for access to the Inventory of items.
  */
-//TODO: verify conformance to REST status code constraints
 @RestController("inventoryController")
 @RequestMapping(value = "/inventory")
 public class InventoryController {
@@ -54,7 +53,8 @@ public class InventoryController {
 
     private IInventoryService inventoryService;
 
-    
+
+    // constructor
     public InventoryController(IInventoryService inventoryService) {
       this.inventoryService = inventoryService;
     }
@@ -84,6 +84,7 @@ public class InventoryController {
       return itemsPage; 
     }
 
+    
     /**
      * @return all items in inventory
      */
@@ -95,6 +96,7 @@ public class InventoryController {
           .getInventory(PageRequest.of(0, DEFAULT_PAGE_SIZE));
     }
 
+    
     /**
      * @return an indicated item in inventory
      */
@@ -109,6 +111,7 @@ public class InventoryController {
       return o.get();
     }
 
+    
     /**
      * Create a new inventory item
      */
@@ -130,6 +133,7 @@ public class InventoryController {
       return;
     }
 
+    
     @DeleteMapping(resourcePath+"/{itemId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteInventoryItem(@PathVariable(value = "itemId") long itemId) {

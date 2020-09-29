@@ -24,6 +24,7 @@ events:
   api:
     orders:
       topic: orders
+      listeners: 2
     inventory:
       topic: inventory
 

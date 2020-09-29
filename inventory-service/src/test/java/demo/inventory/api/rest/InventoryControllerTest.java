@@ -65,7 +65,6 @@ public class InventoryControllerTest {
     assertTrue(controller != null, "Missing InventoryController bean");
   }
 
-  // TODO: add test coverage for error cases
 
   @Test
   public void whenGetSelectedItem_thenOkNotEmpty() throws Exception {
